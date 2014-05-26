@@ -296,19 +296,22 @@ BigInt BigInt::AAKaratsuba(BigInt const& left, BigInt const& right)
     BigInt Result;
     vector<long long> res;
 
+    int size = left.number.size() >= right.number.size() ? left.number.size() : right.number.size();
+
     vector<long long> l;
-    l.resize(left.number.size());
-    for (int i = 0; i < left.number.size(); i++)
+    l.resize(size);
+
+    for (int i = 0; i < size; i++)
     {
-        l[i] = left.number[i];
+        l[i] = (i < left.number.size() ? left.number[i] : 0);
     }
 
     vector<long long> r;
-    r.resize(right.number.size());
+    r.resize(size);
 
-    for (int i = 0; i < right.number.size(); i++)
+    for (int i = 0; i < size; i++)
     {
-        r[i] = right.number[i];
+        r[i] = (i < right.number.size() ? right.number[i] : 0);
     }
 
     if (left.number.size() >= right.number.size())
