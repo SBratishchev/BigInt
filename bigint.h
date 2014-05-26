@@ -15,6 +15,7 @@ class BigInt
     int sign;
 
     void RemoveZero();
+    void ShiftRight();
 public:
     BigInt();
     BigInt(string str);
@@ -41,9 +42,21 @@ public:
     BigInt& operator /=(const BigInt& right);
     friend const BigInt operator %(BigInt left, const BigInt& right);
     BigInt& operator %=(const BigInt& right);
+    friend const BigInt operator ^(BigInt left, BigInt& right);
+    BigInt& operator ^=(BigInt& right);
 
-    BigInt operator^(const int r);
-    BigInt operator^(const BigInt);
+    BigInt operator+(int num) const;
+    void operator+=(int num);
+    BigInt operator-(int num) const;
+    void operator-=(int num);
+    BigInt operator*(int num) const;
+    void operator*=(int num);
+    BigInt operator/(int num) const;
+    void operator/=(int num);
+    BigInt operator%(int num) const;
+    void operator%=(int num);
+    BigInt operator^(int num) const;
+    void operator^=(int num);
 
     bool operator<(const BigInt &r) const;
     bool operator>(const BigInt &r) const;
