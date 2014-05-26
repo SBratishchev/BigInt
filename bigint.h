@@ -18,6 +18,7 @@ class BigInt
     void ShiftRight();
 public:
     BigInt();
+    BigInt(int num);
     BigInt(string str);
     BigInt(char* fileName);
 

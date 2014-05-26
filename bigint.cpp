@@ -7,6 +7,27 @@ BigInt::BigInt()
 }
 
 
+BigInt::BigInt(int num)
+{
+    if (num >= 0)
+    {
+        this->sign = 1;
+    }
+    else
+    {
+        this->sign = -1;
+        num *= -1;
+    }
+
+    this->number.push_back(num % BigInt::base);
+
+    num /= BigInt::base;
+
+    if (num != 0)
+        this->number.push_back(num);
+}
+
+
 BigInt::BigInt(string str)
 {
     StringToInt(str);
@@ -458,17 +479,11 @@ BigInt& BigInt::operator %=(const BigInt& right)
 
 const BigInt operator ^(BigInt left, BigInt& right)
 {
-    BigInt res;
-    BigInt zero;
-    BigInt one;
+    BigInt res(1);
 
-    res.number.push_back(1);
-    zero.number.push_back(0);
-    one.number.push_back(1);
-
-    while (right != zero)
+    while (right != 0)
     {
-        if ((right % 2) == one)
+        if ((right % 2) == 1)
         {
             res *= left;
         }
