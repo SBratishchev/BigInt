@@ -114,6 +114,44 @@ void BigInt::WriteToFile(char* fileName)
 }
 
 
+void BigInt::ReadFromBinFile(char* fileName)
+{
+    ifstream ifst;
+    ifst.open(fileName, ios::binary | ios::in);
+
+    ifst.seekg(0, ifst.end);
+    int fileSize = ifst.tellg();
+    ifst.seekg(0);
+
+    this->number.resize((fileSize / BigInt::baseLen) + 1);
+
+    for (int i = 0; i < fileSize / BigInt::baseLen; i++)
+    {
+        ifst.read((char*)&this->number[i], BigInt::baseLen);
+    }
+
+    ifst.read((char*)&this->sign, 1);
+
+    ifst.close();
+}
+
+
+void BigInt::WriteTiBinFile(char* fileName)
+{
+    ofstream ofst;
+    ofst.open(fileName, ios::binary | ios::out);
+
+    for (int i = 0; i < this->number.size(); i++)
+    {
+        ofst.write((char*)&(this->number[i]), BigInt::baseLen);
+    }
+
+    ofst.write((char*)&this->sign, 1);
+
+    ofst.close();
+}
+
+
 void BigInt::PrintNumber()
 {
     if (this->sign == -1)
@@ -227,8 +265,8 @@ vector<long long> BigInt::Karatsuba(vector<long long> left, vector<long long> ri
 
     if (n <= 8) {
         for (int i = 0; i < n; i++)
-        for (int j = 0; j < n; j++)
-            res[i + j] += left[i] * right[j];
+            for (int j = 0; j < n; j++)
+                res[i + j] += left[i] * right[j];
         return res;
     }
 
@@ -261,6 +299,25 @@ vector<long long> BigInt::Karatsuba(vector<long long> left, vector<long long> ri
         res[i] += a1b1[i];
     for (int i = 0; i < (int)a2b2.size(); i++)
         res[i + n] += a2b2[i];
+    return res;
+}
+
+
+BigInt BigInt::PowMod(BigInt a, BigInt k, BigInt n)
+{
+    BigInt res(1);
+
+    while (k != 0)
+    {
+        if ((k % 2) == 1)
+        {
+            res = (res * a) % n;
+        }
+
+        a = (a * a) % n;
+        k /= 2;
+    }
+
     return res;
 }
 
@@ -435,38 +492,16 @@ BigInt& BigInt::operator /=(const BigInt& right)
 
 
 const BigInt operator %(BigInt left, const BigInt& right)
-{
-    BigInt b = right, result, current;
-    result.number.resize(left.number.size());
+{   
+    BigInt cur = left / right;
 
-    for (long long i = (long long)(left.number.size() - 1); i >= 0; --i)
-    {
-        current.ShiftRight();
-        current.number[0] = left.number[i];
-        current.RemoveZero();
+    cur *= right;
 
-        int x = 0, l = 0, r = BigInt::base;
+    BigInt res = left - cur;
 
-        while (l <= r)
-        {
-            int m = (l + r) / 2;
-            BigInt t = b * m;
-            if (t <= current)
-            {
-                x = m;
-                l = m + 1;
-            }
-            else r = m - 1;
-        }
+    res.sign *= right.sign;
 
-        result.number[i] = x;
-        current = current - b * x;
-    }
-
-    current.sign = left.sign * right.sign;
-    current.RemoveZero();
-
-    return current;
+    return res;
 }
 
 
@@ -688,8 +723,8 @@ bool BigInt::operator<(const BigInt &r) const
     if (this->number.size() != r.number.size())
         return this->number.size() * this->sign < r.number.size() * r.sign;
     for (int i = this->number.size() - 1; i >= 0; i--)
-    if (this->number[i] != r.number[i])
-        return number[i] * this->sign < r.number[i] * this->sign;
+        if (this->number[i] != r.number[i])
+            return number[i] * this->sign < r.number[i] * this->sign;
     return false;
 }
 

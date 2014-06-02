@@ -24,11 +24,14 @@ public:
 
     void ReadFromFile(char* fileName);
     void WriteToFile(char* fileName);
+    void ReadFromBinFile(char* fileName);
+    void WriteTiBinFile(char* fileName);
     void StringToInt(string str);
     void PrintNumber();
 
     BigInt AAKaratsuba(BigInt const& left, BigInt const& right);
     vector<long long> Karatsuba(vector<long long> left, vector<long long> right);
+    BigInt PowMod(BigInt a, BigInt k, BigInt n);
 
     BigInt abs() const;
     BigInt operator-() const;
